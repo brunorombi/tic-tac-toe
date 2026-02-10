@@ -13,8 +13,9 @@ function Gameboard() {
     const getBoard = () => board;
     
     const markCell = (row, col, player) => {
-        if(board[row][col].getValue() !== 0) return;
+        if(board[row][col].getValue() !== 0) return false;
         board[row][col].markPlayer(player);
+        return true;
     };
 
     const printBoard = () => {
@@ -71,7 +72,8 @@ function GameController(
     }
 
     const playRound = (row, col) => {
-        board.markCell(row, col, getActivePlayer());
+        const validCell = board.markCell(row, col, getActivePlayer());
+        if (!validCell) return;
         console.log(`${getActivePlayer().name} mark into row: ${row} and column: ${col}`)
         
         const checkWinner = () => {
@@ -87,9 +89,10 @@ function GameController(
             }
 
             const center = boardMarked[1][1];
-            if (center && ((center === boardMarked[0][0] && center === boardMarked[2][2]) || (center === boardMarked[2][0] && center === boardMarked[0][2])))
+            if (center && ((center === boardMarked[0][0] && center === boardMarked[2][2]) || (center === boardMarked[2][0] && center === boardMarked[0][2]))) {
                 console.log('ganhou, centro')
                 return center;
+            }
             
         }
 
