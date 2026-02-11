@@ -13,8 +13,9 @@ function Gameboard() {
     const getBoard = () => board;
     
     const markCell = (row, col, player) => {
-        if(board[row][col].getValue() !== 0) return;
+        if(board[row][col].getValue() !== 0) return false;
         board[row][col].markPlayer(player);
+        return true;
     };
 
     const printBoard = () => {
@@ -47,7 +48,7 @@ function GameController(
     playerTwoName = "Player Two"
 ) {
     let gameStatus = true;
-
+    let winner = '';
     const board = Gameboard();
 
     const players = [
@@ -72,6 +73,17 @@ function GameController(
         console.log(`${getActivePlayer().name}'s turn`)
     }
 
+    const getWinner = () => {
+        if (winner === players[0].mark) {
+            winner = players[0].name;
+        } else if (winner === players[1].mark) {
+            winner = players[1].name;
+        } else {
+            winner = 'tie';
+        }
+        return winner;
+    }
+
     const getGameStatus = () => gameStatus;
 
     const checkWinner = () => {
@@ -84,31 +96,34 @@ function GameController(
                 const column = boardMarked[0][i];
                 if (row && row === boardMarked[i][1] && row === boardMarked[i][2]) {
                     gameStatus = false;
-                    return true;
+                    winner = row;
+                    return;
                 }
                 if (column && column === boardMarked[1][i] && column === boardMarked[2][i]){
                     gameStatus = false;
-                    return true;
+                    winner = column;
+                    return;
                 }      
             }
 
             const center = boardMarked[1][1];
             if (center && ((center === boardMarked[0][0] && center === boardMarked[2][2]) || (center === boardMarked[2][0] && center === boardMarked[0][2]))) {
                 gameStatus = false;
-                return true;
+                winner = center;
+                return;
             }
-            
+            // Check tie;
     }
 
     const playRound = (row, col) => {
         const gameStatus = getGameStatus();
         if (gameStatus) {
-            board.markCell(row, col, getActivePlayer());
+            const validCell = board.markCell(row, col, getActivePlayer());
+            if(validCell){
+                switchPlayerTurn();
+            }
         };
-
-        if (!checkWinner()) {
-            switchPlayerTurn();           
-        }
+        checkWinner();
         printNewRound();
     }
 
@@ -117,6 +132,7 @@ function GameController(
     // }
 
     return {
+        getWinner,
         getGameStatus,
         getActivePlayer,
         playRound,
@@ -132,10 +148,12 @@ function ScreenController() {
     const updateScreen = () => {
         boardDiv.textContent = '';
         const gameStatus = game.getGameStatus();
+        const winner = game.getWinner()
+    
 
         const activePlayer = game.getActivePlayer();
-        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${activePlayer.name}`
-
+        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${winner}`
+        console.log(winner + "aq")
         const board = game.getBoard();
         
         board.forEach((row, rowIndex) => {
