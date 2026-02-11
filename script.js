@@ -13,9 +13,8 @@ function Gameboard() {
     const getBoard = () => board;
     
     const markCell = (row, col, player) => {
-        if(board[row][col].getValue() !== 0) return false;
+        if(board[row][col].getValue() !== 0) return;
         board[row][col].markPlayer(player);
-        return true;
     };
 
     const printBoard = () => {
@@ -47,6 +46,8 @@ function GameController(
     playerOneName = "Player One", 
     playerTwoName = "Player Two"
 ) {
+    let gameStatus = true;
+
     const board = Gameboard();
 
     const players = [
@@ -71,12 +72,9 @@ function GameController(
         console.log(`${getActivePlayer().name}'s turn`)
     }
 
-    const playRound = (row, col) => {
-        const validCell = board.markCell(row, col, getActivePlayer());
-        if (!validCell) return;
-        console.log(`${getActivePlayer().name} mark into row: ${row} and column: ${col}`)
-        
-        const checkWinner = () => {
+    const getGameStatus = () => gameStatus;
+
+    const checkWinner = () => {
             const boardMarked = board.getBoard().map(row => row.map((cell) => {
                 return !cell.getValue() ? 0 : cell.getValue().mark
             }));
@@ -84,24 +82,42 @@ function GameController(
             for (let i = 0; i < 3; i++) {
                 const row = boardMarked[i][0];
                 const column = boardMarked[0][i];
-                if (row && row === boardMarked[i][1] && row === boardMarked[i][2]) return row;
-                if (column && column === boardMarked[1][i] && column === boardMarked[2][i]) return column;     
+                if (row && row === boardMarked[i][1] && row === boardMarked[i][2]) {
+                    gameStatus = false;
+                    return true;
+                }
+                if (column && column === boardMarked[1][i] && column === boardMarked[2][i]){
+                    gameStatus = false;
+                    return true;
+                }      
             }
 
             const center = boardMarked[1][1];
             if (center && ((center === boardMarked[0][0] && center === boardMarked[2][2]) || (center === boardMarked[2][0] && center === boardMarked[0][2]))) {
-                console.log('ganhou, centro')
-                return center;
+                gameStatus = false;
+                return true;
             }
             
-        }
+    }
 
-        if (checkWinner()) return;
-        switchPlayerTurn();
+    const playRound = (row, col) => {
+        const gameStatus = getGameStatus();
+        if (gameStatus) {
+            board.markCell(row, col, getActivePlayer());
+        };
+
+        if (!checkWinner()) {
+            switchPlayerTurn();           
+        }
         printNewRound();
     }
 
+    // const endGame = () => {
+        
+    // }
+
     return {
+        getGameStatus,
         getActivePlayer,
         playRound,
         getBoard: board.getBoard
@@ -110,17 +126,18 @@ function GameController(
 
 function ScreenController() {
     const game = GameController();
-    const playerTurnDiv = document.querySelector('.turn');
+    const statusDiv = document.querySelector('.status');
     const boardDiv = document.querySelector('.board');
     
     const updateScreen = () => {
         boardDiv.textContent = '';
+        const gameStatus = game.getGameStatus();
+
+        const activePlayer = game.getActivePlayer();
+        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${activePlayer.name}`
 
         const board = game.getBoard();
-        const activePlayer = game.getActivePlayer();
         
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn`
-
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
                 const cellBtn = document.createElement('button');
@@ -141,9 +158,8 @@ function ScreenController() {
     function clickHandlerBoard(e) {
         if(!e.target.classList.contains('cell')) return;
 
-        const row = e.target.dataset.row;
-        const col = e.target.dataset.column;
-
+        const row = parseInt(e.target.dataset.row);
+        const col = parseInt(e.target.dataset.column);
         game.playRound(row, col);
         updateScreen();
     }
