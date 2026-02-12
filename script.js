@@ -18,15 +18,18 @@ function Gameboard() {
         return true;
     };
 
-    const printBoard = () => {
-        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()));
-        console.log(boardWithCellValues);
+    const resetBoard = () => {
+        for(let i = 0; i < rows; i++) {
+            for(let j = 0; j < columns; j++) {
+                board[i][j] = Cell();
+            }
+        }
     }
 
     return {
         getBoard,
         markCell,
-        printBoard
+        resetBoard
     };
 
 }
@@ -68,22 +71,13 @@ function GameController(
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     }
     const getActivePlayer = () => activePlayer;
-    
-    const printNewRound = () => {
-        console.log(`${getActivePlayer().name}'s turn`)
-    }
 
     const getWinner = () => {
-        if (winner === players[0].mark) {
-            winner = players[0].name;
-        } else if (winner === players[1].mark) {
-            winner = players[1].name;
-        } 
-        // else {
-        //     winner = 'tie';
-        // }
-        return winner;
+        if (winner === players[0].mark) return players[0].name;
+        if (winner === players[1].mark) return players[1].name;
+        return winner; 
     }
+
 
     const getGameStatus = () => gameStatus;
 
@@ -135,15 +129,18 @@ function GameController(
 
         if (gameStatus) {
             switchPlayerTurn();
-            printNewRound();
         }
     }
 
-    // const endGame = () => {
-        
-    // }
+    const resetGame = () => {
+        board.resetBoard();
+        winner = '';
+        gameStatus = true; 
+        activePlayer = players[0];  
+    }
 
     return {
+        resetGame,
         getWinner,
         getGameStatus,
         getActivePlayer,
@@ -156,6 +153,7 @@ function ScreenController() {
     const game = GameController();
     const statusDiv = document.querySelector('.status');
     const boardDiv = document.querySelector('.board');
+    const resetBtn = document.querySelector('#reset');
     
     const updateScreen = () => {
         boardDiv.textContent = '';
@@ -163,7 +161,6 @@ function ScreenController() {
         const winner = game.getWinner()
     
         const activePlayer = game.getActivePlayer();
-        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${winner}`;
 
         if (gameStatus) {
             statusDiv.textContent = `${activePlayer.name} turn`;
@@ -192,7 +189,10 @@ function ScreenController() {
         });            
     }
 
-    
+    resetBtn.addEventListener('click', () => {
+        game.resetGame();
+        updateScreen();
+    })
 
     function clickHandlerBoard(e) {
         if(!e.target.classList.contains('cell')) return;
