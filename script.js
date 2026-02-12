@@ -78,9 +78,10 @@ function GameController(
             winner = players[0].name;
         } else if (winner === players[1].mark) {
             winner = players[1].name;
-        } else {
-            winner = 'tie';
-        }
+        } 
+        // else {
+        //     winner = 'tie';
+        // }
         return winner;
     }
 
@@ -88,7 +89,7 @@ function GameController(
 
     const checkWinner = () => {
             const boardMarked = board.getBoard().map(row => row.map((cell) => {
-                return !cell.getValue() ? 0 : cell.getValue().mark
+                return !cell.getValue() ? 0 : cell.getValue().mark;
             }));
 
             for (let i = 0; i < 3; i++) {
@@ -112,19 +113,30 @@ function GameController(
                 winner = center;
                 return;
             }
-            // Check tie;
+
+            const isFull = boardMarked.every(row =>
+                row.every(cell => cell !== 0)
+            );
+
+            if(isFull) {
+                gameStatus = false;
+                winner = 'tie';
+                return;
+            }
     }
 
     const playRound = (row, col) => {
-        const gameStatus = getGameStatus();
-        if (gameStatus) {
-            const validCell = board.markCell(row, col, getActivePlayer());
-            if(validCell){
-                switchPlayerTurn();
-            }
-        };
+        if (!gameStatus) return;
+
+        const validCell = board.markCell(row, col, getActivePlayer());
+        if (!validCell) return;
+
         checkWinner();
-        printNewRound();
+
+        if (gameStatus) {
+            switchPlayerTurn();
+            printNewRound();
+        }
     }
 
     // const endGame = () => {
@@ -150,10 +162,19 @@ function ScreenController() {
         const gameStatus = game.getGameStatus();
         const winner = game.getWinner()
     
-
         const activePlayer = game.getActivePlayer();
-        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${winner}`
-        console.log(winner + "aq")
+        gameStatus ? statusDiv.textContent = `${activePlayer.name} turn` : statusDiv.textContent = `Winner is ${winner}`;
+
+        if (gameStatus) {
+            statusDiv.textContent = `${activePlayer.name} turn`;
+        } else {
+            if (winner === 'tie') {
+                statusDiv.textContent = 'Tie!';
+            } else {
+                statusDiv.textContent = `Winner is ${winner}`;
+            }
+        }
+
         const board = game.getBoard();
         
         board.forEach((row, rowIndex) => {
