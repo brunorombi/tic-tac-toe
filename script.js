@@ -104,11 +104,19 @@ function GameController() {
                 if (row && row === boardMarked[i][1] && row === boardMarked[i][2]) {
                     gameStatus = false;
                     winner = row;
+
+                    const player = players.find(p => p.mark === row);
+                    player.score++;
+
                     return;
                 }
                 if (column && column === boardMarked[1][i] && column === boardMarked[2][i]){
                     gameStatus = false;
                     winner = column;
+
+                    const player = players.find(p => p.mark === winner);
+                    player.score++;
+
                     return;
                 }      
             }
@@ -117,6 +125,10 @@ function GameController() {
             if (center && ((center === boardMarked[0][0] && center === boardMarked[2][2]) || (center === boardMarked[2][0] && center === boardMarked[0][2]))) {
                 gameStatus = false;
                 winner = center;
+
+                const player = players.find(p => p.mark === winner);
+                player.score++;
+
                 return;
             }
 
@@ -208,7 +220,6 @@ function ScreenController() {
                 statusDiv.textContent = 'Tie!';
             } else {
                 statusDiv.textContent = `Winner is ${winner.name}`;
-                winner.score++;
             }
             
             setTimeout(function() {
