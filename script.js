@@ -181,6 +181,11 @@ function ScreenController() {
             } else {
                 statusDiv.textContent = `Winner is ${winner}`;
             }
+
+            setTimeout(function() {
+                game.resetGame();
+                updateScreen();
+            },2000)
         }
         
         const board = game.getBoard();
@@ -212,6 +217,7 @@ function ScreenController() {
     
     resetBtn.addEventListener('click', () => {
         game.resetGame();
+        dialog.showModal();
         updateScreen();
     });
     
