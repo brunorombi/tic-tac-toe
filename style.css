@@ -40,6 +40,12 @@ body {
     letter-spacing: 1px;
 }
 
+.player-one-name { color: #3B82F6; }  
+.player-one-score { color: #93C5FD; }  
+
+.player-two-name { color: #EF4444; }   
+.player-two-score { color: #FCA5A5; }  
+
 .board {
     height: 420px;
     width: 420px;

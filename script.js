@@ -242,7 +242,7 @@ function ScreenController() {
                 const value = cell.getValue();
                 if(value) {
                     cellBtn.textContent = value.mark;
-                    cellBtn.style.color = value.mark === 'X' ? 'blue' : 'red';
+                    cellBtn.style.color = value.mark === 'X' ? '#3B82F6' : '#EF4444';
                 }
 
                 boardDiv.appendChild(cellBtn);
