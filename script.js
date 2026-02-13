@@ -198,7 +198,11 @@ function ScreenController() {
                 cellBtn.dataset.column = colIndex;
                 
                 const value = cell.getValue();
-                cellBtn.textContent = value === 0 ? '' : value.mark;
+                if(value) {
+                    cellBtn.textContent = value.mark;
+                    cellBtn.style.color = value.mark === 'X' ? 'blue' : 'red';
+                }
+
                 boardDiv.appendChild(cellBtn);
             });
         });            
