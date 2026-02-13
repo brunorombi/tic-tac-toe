@@ -173,7 +173,9 @@ function ScreenController() {
         const activePlayer = game.getActivePlayer();
         
         if (gameStatus) {
-            statusDiv.textContent = `${activePlayer.name} turn`;
+            if(activePlayer.name) {
+                statusDiv.textContent = `${activePlayer.name} turn`;
+            }
         } else {
             if (winner === 'tie') {
                 statusDiv.textContent = 'Tie!';
