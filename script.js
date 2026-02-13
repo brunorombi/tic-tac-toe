@@ -155,7 +155,6 @@ function GameController() {
 function ScreenController() {
     const form = document.querySelector('#form');
     const dialog = document.querySelector('#dialog');
-    const submitBtn = document.querySelector('#submit');
     const game = GameController();
     dialog.showModal();
 
@@ -205,10 +204,11 @@ function ScreenController() {
         });            
     }
     
-    submitBtn.addEventListener('click', function() {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); 
         const playerOneName = document.querySelector('#player1').value;
         const playerTwoName = document.querySelector('#player2').value;
-    
+        
         game.fillPlayers(playerOneName, playerTwoName);
         dialog.close();
         form.reset();
