@@ -20,6 +20,21 @@ body {
     color: white;
 }
 
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.game-header div:nth-child(2) {
+    text-align: center;
+}
+
+.game-header div:nth-child(3) {
+    text-align: end;
+}
+
 .status {
     font-size: 28px;
     letter-spacing: 1px;

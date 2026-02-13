@@ -55,13 +55,28 @@ function GameController() {
     const players = [
         {
             name: '',
-            mark:'X'
+            mark:'X',
+            score: 0
         },
         {
             name: '',
-            mark: 'O'
+            mark: 'O',
+            score: 0
         }
     ]
+
+    const getPlayersName = () => {
+        return {player1: players[0].name, player2: players[1].name};
+    }
+
+    const getPlayersScore = () => {
+        return {player1: players[0].score, player2: players[1].score};
+    }
+
+    const resetPlayersScore = () => {
+        players[0].score = 0;
+        players[1].score = 0;
+    }
 
     let activePlayer = players[0];
 
@@ -71,8 +86,8 @@ function GameController() {
     const getActivePlayer = () => activePlayer;
 
     const getWinner = () => {
-        if (winner === players[0].mark) return players[0].name;
-        if (winner === players[1].mark) return players[1].name;
+        if (winner === players[0].mark) return players[0];
+        if (winner === players[1].mark) return players[1];
         return winner; 
     }
 
@@ -133,7 +148,7 @@ function GameController() {
         board.resetBoard();
         winner = '';
         gameStatus = true; 
-        activePlayer = players[0];  
+        activePlayer = players[0];
     }
 
     const fillPlayers = (player1, player2) => {
@@ -142,6 +157,9 @@ function GameController() {
     }
 
     return {
+        getPlayersName,
+        resetPlayersScore,
+        getPlayersScore,
         fillPlayers,
         resetGame,
         getWinner,
@@ -169,7 +187,16 @@ function ScreenController() {
         boardDiv.textContent = '';
         const gameStatus = game.getGameStatus();
         const winner = game.getWinner()
-        
+        const score1 = document.querySelector('.player-one-score');
+        score1.textContent = `score: ${game.getPlayersScore().player1}`;
+        const score2 = document.querySelector('.player-two-score');
+        score2.textContent = `score: ${game.getPlayersScore().player2}`;
+    
+        const player1Name = document.querySelector('.player-one-name');
+        player1Name.textContent = game.getPlayersName().player1;
+        const player2Name = document.querySelector('.player-two-name');
+        player2Name.textContent = game.getPlayersName().player2;
+
         const activePlayer = game.getActivePlayer();
         
         if (gameStatus) {
@@ -180,15 +207,17 @@ function ScreenController() {
             if (winner === 'tie') {
                 statusDiv.textContent = 'Tie!';
             } else {
-                statusDiv.textContent = `Winner is ${winner}`;
+                statusDiv.textContent = `Winner is ${winner.name}`;
+                winner.score++;
             }
-
+            
             setTimeout(function() {
                 game.resetGame();
                 updateScreen();
             },2000)
         }
         
+
         const board = game.getBoard();
         
         board.forEach((row, rowIndex) => {
@@ -223,6 +252,7 @@ function ScreenController() {
     
     resetBtn.addEventListener('click', () => {
         game.resetGame();
+        game.resetPlayersScore();
         dialog.showModal();
         updateScreen();
     });

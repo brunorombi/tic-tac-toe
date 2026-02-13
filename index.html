@@ -11,16 +11,30 @@
         <dialog id="dialog">
             <form action="" id="form">
                 <label for="player1">Player One Name:</label>
-                <input type="text" id="player1" required>
+                <input type="text" id="player1" required maxlength="10">
 
                 <label for="player2">Player Two Name:</label>
-                <input type="text" id="player2" required>
+                <input type="text" id="player2" required maxlength="10">
 
                 <button type="submit" id="submit">Submit</button>
             </form>
         </dialog>
-        <button id="reset">Reset</button>
-        <h1 class="status"></h1>
+        <div class="game-header">
+            <div>
+                <h1>Player 1</h1>
+                <h2 class="player-one-name"></h2>
+                <p class="player-one-score"></p>
+            </div>
+            <div>
+                <button id="reset">Reset</button>
+                <h1 class="status"></h1>
+            </div>
+            <div>
+                <h1>Player 2</h1>
+                <h2 class="player-two-name"></h2>
+                <p class="player-two-score"></p>
+            </div>
+        </div>
         <div class="board"></div>
     </div>
 
