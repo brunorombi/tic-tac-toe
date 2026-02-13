@@ -27,7 +27,6 @@
 .cell {
     height: 100%;
     width: 100%;
-    border: 1px solid black;
     cursor: pointer;
     color: black;
     font-size: 50px;
@@ -35,4 +34,35 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    background: radial-gradient(circle at center, #A3B5C3 0%, #7B92A5 100%);
+}
+
+dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 40px;
+    width: 600px;
+    text-align: center;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+form input[type=text] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
 }
